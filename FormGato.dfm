@@ -94,7 +94,7 @@ object fmPrincipal: TfmPrincipal
         Width = 230
       end
       item
-        Text = 'Simbolo: X'
+        Text = 'Marca: X'
         Width = 70
       end
       item

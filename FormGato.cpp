@@ -178,7 +178,7 @@ void __fastcall TfmPrincipal::TableroSelectCell(TObject *Sender, int ACol, int A
 //---------------------------------------------------------------------------
 void __fastcall TfmPrincipal::btnJugarClick(TObject *Sender)
 {
-   inicializaControles();
+   inicializaControlesInicioJuego();
    inicializaJuego();
 }
 //---------------------------------------------------------------------------
