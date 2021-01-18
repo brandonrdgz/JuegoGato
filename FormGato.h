@@ -59,13 +59,8 @@ private:	// User declarations
    Celda calculaCelda();
    void marcaCeldaTablero(Celda celda, char marca);
    void eliminaCeldaDeDisponibles(Celda celda);
-   void movimientoModalidad(int fila, int columna);
-   void movimientoModalidadJvJ(int fila, int columna);
-   void movimientoModalidadJvC(int fila, int columna);
-   void muestraMensajeEstadoTablero();
    void inicializaControlesFinJuego();
    void inicializaControlesInicioJuego();
-   void centrar();
 
 public:		// User declarations
 	__fastcall TfmPrincipal(TComponent* Owner);
