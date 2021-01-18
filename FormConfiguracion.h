@@ -28,11 +28,14 @@ __published:	// IDE-managed Components
    void __fastcall rgEmpiezaJugador1Click(TObject *Sender);
    void __fastcall rgMarcaJugador2Click(TObject *Sender);
    void __fastcall rgEmpiezaJugador2Click(TObject *Sender);
+   void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
+   void __fastcall rgTipoJugador2Click(TObject *Sender);
 private:	// User declarations
    int modalidad;
    int simbolo;
 	int dificultad;
 	bool turnoHumano;
+   void actualizaConfEnBarraEstado();
 public:		// User declarations
    __fastcall TfmConfiguracion(TComponent* Owner);
    TipoJugador getTipoJugador1();

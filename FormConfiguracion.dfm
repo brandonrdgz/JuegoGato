@@ -12,6 +12,7 @@ object fmConfiguracion: TfmConfiguracion
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnClose = FormClose
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -125,6 +126,7 @@ object fmConfiguracion: TfmConfiguracion
       'HUMANO'
       'MAQUINA')
     TabOrder = 6
+    OnClick = rgTipoJugador2Click
   end
   object rgEmpiezaJugador2: TRadioGroup
     Left = 128
