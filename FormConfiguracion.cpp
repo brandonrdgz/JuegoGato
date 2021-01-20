@@ -131,7 +131,7 @@ void TfmConfiguracion::textoBarraEstadoJugadorVSJugador(
       String &dificultad,
       String &jugadorQueEmpieza
    ) {
-   modalidadJuego = "Modalidad de juego: Jugador vs Jugador";
+   modalidadJuego = "Modalidad: Jugador vs Jugador";
    marcaJugador1 = "";
    dificultad = "";
    jugadorQueEmpieza = "";
@@ -146,7 +146,7 @@ void TfmConfiguracion::textoBarraEstadoJugadorVSCPU(
       bool empiezaJugador1,
       String &jugadorQueEmpieza
    ) {
-   modalidadJuego = "Modalidad de juego: Jugador vs CPU";
+   modalidadJuego = "Modalidad: Jugador vs CPU";
    marcaJugador1 = "Marca: " + rgMarcaJugador1->Items->Strings[iMarcaJugador1];
    dificultad = "Dificultad: " + rgDificultad->Items->Strings[iDificultad];
    jugadorQueEmpieza = "Empieza: ";
