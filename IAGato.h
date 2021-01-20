@@ -18,7 +18,7 @@ private:
       char marcaHumano,
       char marcaJugador
    );
-   static std::vector<Celda> copiaCeldasDisponiblesSinElemento(std::vector<Celda> celdasDisponibles, int indElementoEliminar);
+   static std::vector<Celda> eliminaCeldaDeDisponibles(std::vector<Celda> celdasDisponibles, int indCeldaAEliminar);
    static Movimiento mejorMovimiento(std::vector<Movimiento> listaMovimientos, char marcaJugadorActual, char marcaIA);
 
 public:
