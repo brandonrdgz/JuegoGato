@@ -101,7 +101,7 @@ Movimiento IAGato::minimax(
       Celda celdaActual = celdasDisponibles[i];
       movimiento.setCelda(celdaActual);
       tablero[celdaActual.getFila()][celdaActual.getColumna()] = marcaJugador;
-      std::vector<Celda> copiaCeldasDisponibles = copiaVector(celdasDisponibles, i + 1, celdasDisponibles.size());
+      std::vector<Celda> copiaCeldasDisponibles = copiaCeldasDisponiblesSinElemento(celdasDisponibles, i);
 
       if(marcaJugador == marcaIA) {
          movimiento.setPuntaje(
@@ -164,15 +164,16 @@ bool IAGato::esGanador(char **tablero, int filasPosGanadoras, int columnasPosGan
    return esGanador;
 }
 
-template <typename T>
-std::vector<T> IAGato::copiaVector(std::vector<T> vectorOrigen, int indInicio, int indFin) {
-    std::vector<T> copiaVector;
+std::vector<Celda> IAGato::copiaCeldasDisponiblesSinElemento(std::vector<Celda> celdasDisponibles, int indElementoEliminar) {
+   std::vector<Celda> copiaCeldasDisponibles;
 
-    for (int i = indInicio; i < indFin; i++) {
-        copiaVector.push_back(vectorOrigen[i]);
-    }
+   for (Celda celda : celdasDisponibles) {
+      copiaCeldasDisponibles.push_back(celda);
+   }
 
-    return copiaVector;
+   copiaCeldasDisponibles.erase(copiaCeldasDisponibles.begin() + indElementoEliminar);
+
+   return copiaCeldasDisponibles;
 }
 
 Movimiento IAGato::mejorMovimiento(std::vector<Movimiento> listaMovimientos, char marcaJugadorActual, char marcaIA) {

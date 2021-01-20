@@ -18,10 +18,7 @@ private:
       char marcaHumano,
       char marcaJugador
    );
-
-   template <typename T>
-   static std::vector<T> copiaVector(std::vector<T> vectorOrigen, int indInicio, int indFin);
-
+   static std::vector<Celda> copiaCeldasDisponiblesSinElemento(std::vector<Celda> celdasDisponibles, int indElementoEliminar);
    static Movimiento mejorMovimiento(std::vector<Movimiento> listaMovimientos, char marcaJugadorActual, char marcaIA);
 
 public:
