@@ -14,6 +14,16 @@ __fastcall TfmConfiguracion::TfmConfiguracion(TComponent* Owner)
 {
 }
 
+void __fastcall TfmConfiguracion::FormShow(TObject *Sender) {
+   confCambiada = false;
+   iCpMarcaJugador1 = rgMarcaJugador1->ItemIndex;
+   iCpEmpiezaJugador1 = rgEmpiezaJugador1->ItemIndex;
+   iCpTipoJugador2 = rgTipoJugador2->ItemIndex;
+   iCpMarcaJugador2 = rgMarcaJugador2->ItemIndex;
+   iCpEmpiezaJugador2 = rgEmpiezaJugador2->ItemIndex;
+   iCpDificultad = rgDificultad->ItemIndex;
+}
+
 void __fastcall TfmConfiguracion::rgMarcaJugador1Click(TObject *Sender)
 {
    int marca = rgMarcaJugador1->ItemIndex;
@@ -74,7 +84,13 @@ void __fastcall TfmConfiguracion::rgEmpiezaJugador2Click(TObject *Sender)
 }
 
 void __fastcall TfmConfiguracion::FormClose(TObject *Sender, TCloseAction &Action) {
-   actualizaConfEnBarraEstado();
+   if (confCambiada == true) {
+      actualizaConfEnBarraEstado();
+      confCambiada = false;
+   }
+   else {
+      restauraConf();
+   }
 }
 
 void TfmConfiguracion::actualizaConfEnBarraEstado() {
@@ -143,8 +159,18 @@ void TfmConfiguracion::textoBarraEstadoJugadorVSCPU(
    }
 }
 
+void TfmConfiguracion::restauraConf() {
+   rgMarcaJugador1->ItemIndex = iCpMarcaJugador1;
+   rgEmpiezaJugador1->ItemIndex = iCpEmpiezaJugador1;
+   rgTipoJugador2->ItemIndex = iCpTipoJugador2;
+   rgMarcaJugador2->ItemIndex = iCpMarcaJugador2;
+   rgEmpiezaJugador2->ItemIndex = iCpEmpiezaJugador2;
+   rgDificultad->ItemIndex = iCpDificultad;
+}
+
 void __fastcall TfmConfiguracion::btnAceptarClick(TObject *Sender)
 {
+   confCambiada = true;
    this->Close();
 }
 

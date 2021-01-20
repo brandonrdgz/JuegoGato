@@ -13,6 +13,7 @@ object fmConfiguracion: TfmConfiguracion
   OldCreateOrder = False
   Position = poScreenCenter
   OnClose = FormClose
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

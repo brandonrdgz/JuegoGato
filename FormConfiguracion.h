@@ -28,8 +28,16 @@ __published:	// IDE-managed Components
    void __fastcall rgEmpiezaJugador2Click(TObject *Sender);
    void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
    void __fastcall btnAceptarClick(TObject *Sender);
+   void __fastcall FormShow(TObject *Sender);
 
 private:	// User declarations
+   bool confCambiada;
+   int iCpMarcaJugador1;
+   int iCpEmpiezaJugador1;
+   int iCpTipoJugador2;
+   int iCpMarcaJugador2;
+   int iCpEmpiezaJugador2;
+   int iCpDificultad;
    void actualizaConfEnBarraEstado();
    void textoBarraEstadoJugadorVSJugador(
       String &modalidadJuego,
@@ -46,6 +54,7 @@ private:	// User declarations
       bool empiezaJugador1,
       String &jugadorQueEmpieza
    );
+   void restauraConf();
 
 public:		// User declarations
    __fastcall TfmConfiguracion(TComponent* Owner);
