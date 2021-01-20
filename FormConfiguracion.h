@@ -1,15 +1,13 @@
-//---------------------------------------------------------------------------
-
 #ifndef FormConfiguracionH
 #define FormConfiguracionH
-//---------------------------------------------------------------------------
+
 #include <System.Classes.hpp>
 #include <Vcl.Controls.hpp>
 #include <Vcl.StdCtrls.hpp>
 #include <Vcl.Forms.hpp>
 #include <Vcl.ExtCtrls.hpp>
 #include "TipoJugador.h"
-//---------------------------------------------------------------------------
+
 class TfmConfiguracion : public TForm
 {
 __published:	// IDE-managed Components
@@ -23,15 +21,32 @@ __published:	// IDE-managed Components
    TRadioGroup *rgTipoJugador1;
    TRadioGroup *rgTipoJugador2;
    TRadioGroup *rgEmpiezaJugador2;
-   void __fastcall btnAceptarClick(TObject *Sender);
    void __fastcall rgMarcaJugador1Click(TObject *Sender);
    void __fastcall rgEmpiezaJugador1Click(TObject *Sender);
+   void __fastcall rgTipoJugador2Click(TObject *Sender);
    void __fastcall rgMarcaJugador2Click(TObject *Sender);
    void __fastcall rgEmpiezaJugador2Click(TObject *Sender);
    void __fastcall FormClose(TObject *Sender, TCloseAction &Action);
-   void __fastcall rgTipoJugador2Click(TObject *Sender);
+   void __fastcall btnAceptarClick(TObject *Sender);
+
 private:	// User declarations
    void actualizaConfEnBarraEstado();
+   void textoBarraEstadoJugadorVSJugador(
+      String &modalidadJuego,
+      String &marcaJugador1,
+      String &dificultad,
+      String &jugadorQueEmpieza
+   );
+   void textoBarraEstadoJugadorVSCPU(
+      String &modalidadJuego,
+      int iMarcaJugador1,
+      String &marcaJugador1,
+      int iDificultad,
+      String &dificultad,
+      bool empiezaJugador1,
+      String &jugadorQueEmpieza
+   );
+
 public:		// User declarations
    __fastcall TfmConfiguracion(TComponent* Owner);
    TipoJugador getTipoJugador1();
@@ -42,7 +57,7 @@ public:		// User declarations
    bool getEmpiezaJugador2();
    int getDificultad();
 };
-//---------------------------------------------------------------------------
+
 extern PACKAGE TfmConfiguracion *fmConfiguracion;
-//---------------------------------------------------------------------------
+
 #endif

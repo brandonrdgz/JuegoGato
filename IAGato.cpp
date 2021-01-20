@@ -1,57 +1,159 @@
-//---------------------------------------------------------------------------
-
 #pragma hdrstop
 
 #include <climits>
 #include "IAGato.h"
 #include "static_block.hpp"
-//---------------------------------------------------------------------------
-#pragma package(smart_init)
 
-const Celda IAGato::posGanadoras[8][3] {
-      {Celda(0, 0), Celda(0, 1), Celda(0, 2)},
-      {Celda(1, 0), Celda(1, 1), Celda(1, 2)},
-      {Celda(2, 0), Celda(2, 1), Celda(2, 2)},
-      {Celda(0, 0), Celda(1, 0), Celda(2, 0)},
-      {Celda(0, 1), Celda(1, 1), Celda(2, 1)},
-      {Celda(0, 2), Celda(1, 2), Celda(2, 2)},
-      {Celda(0, 0), Celda(1, 1), Celda(2, 2)},
-      {Celda(0, 2), Celda(1, 1), Celda(2, 0)}
-};
+#pragma package(smart_init)
 
 static_block {
    srand(time(0));
 }
 
-std::vector<Celda> IAGato::celdasVacias(int filas, int columnas, char **tablero) {
-   std::vector<Celda> celdasVacias;
+Movimiento IAGato::calculaMovimiento(
+      char **tablero,
+      std::vector<Celda> celdasDisponibles,
+      int filasPosGanadoras,
+      int columnasPosGanadoras,
+      Celda **posGanadoras,
+      char marcaIA,
+      char marcaHumano,
+      int dificultad
+   ) {
+   Movimiento movimiento;
+   int indJugada;
 
-   for (int fila = 0; fila < filas; fila++) {
-      for (int columna = 0; columna < columnas; columna++) {
-         if (tablero[fila][columna] == CHAR_MIN) {
-            celdasVacias.push_back(Celda(fila, columna));
-         }
+   if (dificultad == 0) {
+      movimiento = movimientoAleatorio(celdasDisponibles);
+   }
+   else if(dificultad == 1) {
+      indJugada = rand() % 2;
+
+      if (indJugada == 0) {
+         movimiento = movimientoAleatorio(celdasDisponibles);
+      }
+      else {
+         movimiento = minimax(
+               tablero,
+               celdasDisponibles,
+               filasPosGanadoras,
+               columnasPosGanadoras,
+               posGanadoras,
+               marcaIA,
+               marcaHumano,
+               marcaIA
+         );
       }
    }
+   else {
+      movimiento = minimax(
+            tablero,
+            celdasDisponibles,
+            filasPosGanadoras,
+            columnasPosGanadoras,
+            posGanadoras,
+            marcaIA,
+            marcaHumano,
+            marcaIA
+      );
+   }
 
-   return celdasVacias;
+   return movimiento;
 }
 
-bool IAGato::esGanador(char **tablero, char jugador) {
-   int ganador = jugador * 3;
+Movimiento IAGato::movimientoAleatorio(std::vector<Celda> celdasDisponibles) {
+   int indCeldaDisponible = rand() % celdasDisponibles.size();
+   Movimiento movimiento;
+   movimiento.setCelda(celdasDisponibles[indCeldaDisponible]);
+
+   return movimiento;
+}
+
+Movimiento IAGato::minimax(
+      char **tablero,
+      std::vector<Celda> celdasDisponibles,
+      int filasPosGanadoras,
+      int columnasPosGanadoras,
+      Celda **posGanadoras,
+      char marcaIA,
+      char marcaHumano,
+      char marcaJugador
+   ) {
+   Movimiento movimiento;
+
+   if(esGanador(tablero, filasPosGanadoras, columnasPosGanadoras, posGanadoras, marcaIA)) {
+      movimiento.setPuntaje(10);
+      return movimiento;
+   }
+   else if(esGanador(tablero, filasPosGanadoras, columnasPosGanadoras, posGanadoras, marcaHumano)) {
+      movimiento.setPuntaje(-10);
+      return movimiento;
+   }
+   else if(celdasDisponibles.empty()) {
+      movimiento.setPuntaje(0);
+      return movimiento;
+   }
+
+   std::vector<Movimiento> movimientos;
+
+   for(int i = 0; i < celdasDisponibles.size(); i++) {
+      movimiento = Movimiento();
+      Celda celdaActual = celdasDisponibles[i];
+      movimiento.setCelda(celdaActual);
+      tablero[celdaActual.getFila()][celdaActual.getColumna()] = marcaJugador;
+      std::vector<Celda> copiaCeldasDisponibles = copiaVector(celdasDisponibles, i + 1, celdasDisponibles.size());
+
+      if(marcaJugador == marcaIA) {
+         movimiento.setPuntaje(
+               minimax(
+                     tablero,
+                     copiaCeldasDisponibles,
+                     filasPosGanadoras,
+                     columnasPosGanadoras,
+                     posGanadoras,
+                     marcaIA,
+                     marcaHumano,
+                     marcaHumano
+               )
+            .getPuntaje()
+         );
+      }
+      else {
+         movimiento.setPuntaje(
+               minimax(
+                     tablero,
+                     copiaCeldasDisponibles,
+                     filasPosGanadoras,
+                     columnasPosGanadoras,
+                     posGanadoras,
+                     marcaIA,
+                     marcaHumano,
+                     marcaIA
+               )
+            .getPuntaje()
+         );
+      }
+
+      tablero[celdaActual.getFila()][celdaActual.getColumna()] = CHAR_MIN;
+      movimientos.push_back(movimiento);
+   }
+
+   return mejorMovimiento(movimientos, marcaJugador, marcaIA);
+}
+
+bool IAGato::esGanador(char **tablero, int filasPosGanadoras, int columnasPosGanadoras, Celda **posGanadoras, char marcaJugador) {
+   int combGanadora = marcaJugador * 3;
    int combActual = 0;
    bool esGanador = false;
-   int filas = sizeof(posGanadoras) / sizeof(posGanadoras[0]);
-   int columnas = sizeof(posGanadoras[0]) / sizeof(posGanadoras[0][0]);
    Celda celda;
 
-   for(int fila = 0; fila < filas; fila++) {
-      for (int columna = 0; columna < columnas; columna++) {
+   for(int fila = 0; fila < filasPosGanadoras; fila++) {
+      for (int columna = 0; columna < columnasPosGanadoras; columna++) {
          celda = posGanadoras[fila][columna];
          combActual += tablero[celda.getFila()][celda.getColumna()];
       }
 
-      if (combActual == ganador) {
+      if (combActual == combGanadora) {
          esGanador = true;
          break;
       }
@@ -62,48 +164,25 @@ bool IAGato::esGanador(char **tablero, char jugador) {
    return esGanador;
 }
 
-Movimiento IAGato::minimax(int filas, int columnas, char **tablero, char IA, char humano, char jugador) {
-   std::vector<Celda> celdasVacias = IAGato::celdasVacias(filas, columnas, tablero);
-   Movimiento movimiento = Movimiento();
+template <typename T>
+std::vector<T> IAGato::copiaVector(std::vector<T> vectorOrigen, int indInicio, int indFin) {
+    std::vector<T> copiaVector;
 
-   if(esGanador(tablero, IA)) {
-      movimiento.setPuntaje(10);
-      return movimiento;
-   }
-   else if(esGanador(tablero, humano)) {
-      movimiento.setPuntaje(-10);
-      return movimiento;
-   }
-   else if(celdasVacias.empty()) {
-      movimiento.setPuntaje(0);
-      return movimiento;
-   }
+    for (int i = indInicio; i < indFin; i++) {
+        copiaVector.push_back(vectorOrigen[i]);
+    }
 
-   std::vector<Movimiento> movimientos;
+    return copiaVector;
+}
 
-   for(Celda celda : celdasVacias) {
-      movimiento = Movimiento();
-      movimiento.setCelda(celda);
-      tablero[celda.getFila()][celda.getColumna()] = jugador;
-
-      if(jugador == IA) {
-         movimiento.setPuntaje(minimax(filas, columnas, tablero, IA, humano, humano).getPuntaje());
-      }
-      else {
-         movimiento.setPuntaje(minimax(filas, columnas, tablero, IA, humano, IA).getPuntaje());
-      }
-
-      tablero[celda.getFila()][celda.getColumna()] = CHAR_MIN;
-      movimientos.push_back(movimiento);
-   }
-
-   Movimiento mejorMovimiento = Movimiento();
+Movimiento IAGato::mejorMovimiento(std::vector<Movimiento> listaMovimientos, char marcaJugadorActual, char marcaIA) {
+   Movimiento mejorMovimiento;
    int mejorPuntaje;
 
-   if(jugador == IA) {
+   if(marcaJugadorActual == marcaIA) {
       mejorPuntaje = INT_MIN;
 
-      for (Movimiento movimientoActual : movimientos) {
+      for (Movimiento movimientoActual : listaMovimientos) {
          if(movimientoActual.getPuntaje() > mejorPuntaje) {
             mejorPuntaje = movimientoActual.getPuntaje();
             mejorMovimiento = movimientoActual;
@@ -113,7 +192,7 @@ Movimiento IAGato::minimax(int filas, int columnas, char **tablero, char IA, cha
    else {
       mejorPuntaje = INT_MAX;
 
-      for(Movimiento movimientoActual : movimientos) {
+      for(Movimiento movimientoActual : listaMovimientos) {
          if(movimientoActual.getPuntaje() < mejorPuntaje) {
             mejorPuntaje = movimientoActual.getPuntaje();
             mejorMovimiento = movimientoActual;
@@ -122,37 +201,4 @@ Movimiento IAGato::minimax(int filas, int columnas, char **tablero, char IA, cha
    }
 
    return mejorMovimiento;
-}
-
-Movimiento IAGato::movimientoAleatorio(int filas, int columnas, char **tablero) {
-   std::vector<Celda> celdasVacias = IAGato::celdasVacias(filas, columnas, tablero);
-   int indCeldaVacia = rand() % celdasVacias.size();
-   Movimiento movimiento;
-   movimiento.setCelda(celdasVacias[indCeldaVacia]);
-
-   return movimiento;
-}
-
-Movimiento IAGato::mejorMovimiento(int filas, int columnas, char **tablero, char IA, char humano, int dificultad) {
-   Movimiento movimiento;
-   int indJugada;
-
-   if (dificultad == 0) {
-      movimiento = movimientoAleatorio(filas, columnas, tablero);
-   }
-   else if(dificultad == 1) {
-      indJugada = rand() % 2;
-
-      if (indJugada == 0) {
-         movimiento = movimientoAleatorio(filas, columnas, tablero);
-      }
-      else {
-         movimiento = minimax(filas, columnas, tablero, IA, humano, IA);
-      }
-   }
-   else {
-      movimiento = minimax(filas, columnas, tablero, IA, humano, IA);
-   }
-
-   return movimiento;
 }

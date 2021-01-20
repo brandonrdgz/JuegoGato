@@ -1,14 +1,12 @@
-//---------------------------------------------------------------------------
-
 #include <vcl.h>
 #pragma hdrstop
 #include <tchar.h>
-//---------------------------------------------------------------------------
+
 #include <Vcl.Styles.hpp>
 #include <Vcl.Themes.hpp>
 USEFORM("FormConfiguracion.cpp", fmConfiguracion);
 USEFORM("FormGato.cpp", fmPrincipal);
-//---------------------------------------------------------------------------
+
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 {
 	try
@@ -37,4 +35,3 @@ int WINAPI _tWinMain(HINSTANCE, HINSTANCE, LPTSTR, int)
 	}
 	return 0;
 }
-//---------------------------------------------------------------------------
